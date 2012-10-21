@@ -1,0 +1,5 @@
+"let g:spf13_bundle_groups=['general', 'neocomplcache', 'programming', 'php', 'ruby', 'python', 'javascript', 'html', 'misc', 'scala']
+let g:spf13_bundle_groups=['general', 'neocomplcache', 'programming', 'html' ]
+Bundle 'vim-scripts/vimwiki.git'
+Bundle 'HTML.zip'
+let g:spf13_leader='\'
