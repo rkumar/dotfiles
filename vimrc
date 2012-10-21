@@ -1,806 +1,592 @@
-" customized by rahul kumar
-" Maintainer:	rahul
-" Last update:  2011-11-12 - 14:31
+" Modeline and Notes {
+" vim: set foldmarker={,} foldlevel=0 foldmethod=marker spell:
 "
-set nocompatible	" Use Vim defaults (much better!)
-
-set bs=2		" allow backspacing over everything in insert mode
-"set ai			" always set autoindenting on
-"set nowritebackup " i am doing this since those large files are being edited awfully slowly
-set viminfo='20,\"50	" read/write a .viminfo file, don't store more
-			" than 50 lines of registers
-set history=50		" keep 50 lines of command line history
-set ruler		" show the cursor position all the time - is superceded by statusline
-"set rulerformat=%55(%{strftime('%a\ %b\ %e\ %I:%M\ %p')}\ %5l,%-6(%c%V%)\ %P%)
-
-" added 2010-09-21 21:20 
-filetype off
-call pathogen#runtime_append_all_bundles() 
-"set showmatch  " i find this too confusing
-set tabstop=2
-set shiftwidth=2
-set softtabstop=2
-set backupdir=~/tmp/vimbackup//  " put backups in ~/tmp, dont clutter current
-set directory=~/tmp/vimswap//
-set backup		" keep a backup file - actually without this won't know if file edited in 2 places
-" Make Vim able to edit crontab files again.
-set backupskip=/tmp/*,/private/tmp/*" 
-
-set expandtab           " expand tabs to spaces
-set nonu                " copying sucks with numbering
-set t_Co=256
-set background=dark
-
-set incsearch          " i love this
-"set cindent             " C indenting as I type -- see ahead !!!
-set vb                    " visual bell - no beep
-set noeb
-if has("autocmd")
-  " In text files, always limit the width of text to 72 characters
-  autocmd BufRead *.txt set tw=72
-  " When editing a file, always jump to the last cursor position
-  " thenext line gives annoying errors on temp and log files
-  "autocmd BufReadPost * if line("'\"") | exe "'\"" | endif
-  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-  autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
-endif
-
-" Don't use Ex mode, use Q for formatting
-map Q gq
-noremap W :w<CR>
-
-" map tab to previous matching character
-"inoremap <TAB> 
-
-" on F2 copy current line down, and comment current with timestamp
-"map <F2> yy0i#<Esc>A # chg on <C-R>=strftime("%Y-%m-%d %H:%M:%S")<CR><Esc>p
-"imap <F2> Arunachala added on <C-R>=strftime("%Y%m%d %H:%M:%S")<CR><Esc>
-" next is to place on top of files i write as diaries
-" to generate date based file name on : prompt when saving
-"cmap <F2> <C-R>=strftime("%Y-%m-%d %H:%M:%S")<CR>
-"cmap <F2> ~/Thoughts/<C-R>=strftime("%Y-%m-%d")<CR>.txt
-"cmap <F3> <C-R>=strftime("%Y-%m-%d_%H%M%S")<CR>
-" well, in MAC inbuilt laptop kb  you need to press fn+F2 for this.
-" F4: Toggle list (display unprintable characters).
-"nnoremap <F4> :set list!<CR>
-"------------------------------------------------------------------------------
-"" HTML.
-"------------------------------------------------------------------------------
-" " does hyperlinking of content from yaml link files
-"nmap \l :/^BODY/,/^---/ ! inter.rb <bar> urlify.rb <bar> urlize.rb
-" " will replace prev word with same name + rubyforge.net as URL
-"nmap \r hviwyi<A HREF="<ESC>pa.rubyforge.net/"><ESC>lea</A> 
+"                    __ _ _____              _
+"         ___ _ __  / _/ |___ /      __   __(_)_ __ ___
+"        / __| '_ \| |_| | |_ \ _____\ \ / /| | '_ ` _ \
+"        \__ \ |_) |  _| |___) |_____|\ V / | | | | | | |
+"        |___/ .__/|_| |_|____/        \_/  |_|_| |_| |_|
+"            |_|
 "
-"" Print an empty <a> tag.
-imap ;h <a href=""></a><ESC>5hi
-
-" Wrap an <a> tag around the URL under the cursor.
-map ;H lBi<a href="<ESC>Ea"></a><ESC>3hi
-" wrap a <a> tag around selected text (use v motion to select)
-vmap ;H `><ESC>a</a><ESC>`<<ESC>i<a href=""><ESC>hi.html<ESC>4hi
-" help visual-block to know more
-"------------------------------------------------------------------------------
-" Enable this if you mistype :w as :W or :q as :Q.
-nmap :W :w
-nmap :Q :q
-" i keep typing :X which is encrypt key
-nmap :X :x
-
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-if &t_Co > 2 || has("gui_running")
-  syntax on
-  set hlsearch
-endif
-
-" added jsp and java to c cpp. no wonder the cindent was not working RK XXX
-if has("autocmd")
- augroup cprog
-  " Remove all cprog autocommands
-  au!
-
-  " When starting to edit a file:
-  "   For C and C++ files set formatting of comments and set C-indenting on.
-  "   For other files switch it off.
-  "   Don't change the order, it's important that the line with * comes first.
-  autocmd FileType *      set formatoptions=tcqln nocindent ai comments=sr:#,mb:#,el:#/,:## 
-  "autocmd FileType *      set formatoptions=tcqln nocindent ai comments=sr:##,mb:##+,el:#/,:#
-  autocmd FileType pl,awk,perl  set formatoptions=croqln cindent comments=sr:#,mb:#
-  autocmd FileType c,cpp,java,jsp  set formatoptions=croqln cindent comments=sr:/*,mb:*,el:*/,://
-  autocmd FileType sh set formatoptions=croqln cindent comments=sr:#,mb:#,el:#/,:## 
-  "autocmd FileType sh set formatoptions=croqln cindent comments=sr:##,mb:##+,el:#/,:#
-
-  autocmd FileType c abbr sep fprintf( stderr, "Error xxx.\n");
-  autocmd FileType c abbr sop fprintf( stdout, "Outxxx.\n");
-  autocmd FileType c abbr fori for( i = 0; i < len; i++ ){
-  autocmd FileType c abbr forj for( j = 0; j < len; j++ ){
-
-  autocmd FileType rb abbr fwrite File.open(filename,"w").write(str).close();
-
- augroup END
-
- augroup gzip
-  " Remove all gzip autocommands
-  au!
-
-  " Enable editing of gzipped files
-  "	  read:	set binary mode before reading the file
-  "		uncompress text in buffer after reading
-  "	 write:	compress file after writing
-  "	append:	uncompress file, append, compress file
-"  autocmd BufReadPre,FileReadPre	*.gz set bin
-"  autocmd BufReadPost,FileReadPost	*.gz let ch_save = &ch|set ch=2
-"  autocmd BufReadPost,FileReadPost	*.gz '[,']!gunzip
-"  autocmd BufReadPost,FileReadPost	*.gz set nobin
-"  autocmd BufReadPost,FileReadPost	*.gz let &ch = ch_save|unlet ch_save
-"  autocmd BufReadPost,FileReadPost	*.gz execute ":doautocmd BufReadPost " . expand("%:r")
+"   This is the personal .vimrc file of Steve Francia.
+"   While much of it is beneficial for general use, I would
+"   recommend picking out the parts you want and understand.
 "
-"  autocmd BufWritePost,FileWritePost	*.gz !mv <afile> <afile>:r
-"  autocmd BufWritePost,FileWritePost	*.gz !gzip <afile>:r
-"
-"  autocmd FileAppendPre			*.gz !gunzip <afile>
-"  autocmd FileAppendPre			*.gz !mv <afile>:r <afile>
-"  autocmd FileAppendPost		*.gz !mv <afile> <afile>:r
-"  autocmd FileAppendPost		*.gz !gzip <afile>:r
- augroup END
-autocmd BufNewFile  *.java	0r ~/.skeleton.java
-autocmd BufNewFile  *.c	0r ~/.skeleton.c
-autocmd BufNewFile  *.pl 0r ~/.skeleton.pl
-autocmd BufNewFile  *.py 0r ~/.skeleton.py
-autocmd BufNewFile  *.html 0r ~/.skeleton.html
-autocmd BufNewFile  *.rb 0r ~/.skeleton.rb
-"autocmd BufNewFile  *.rb 0r ~/.skeleton.rb
-autocmd BufNewFile  *.sh 0r ~/.skeleton.sh
-autocmd BufNewFile  *.txt 0r ~/.skeleton.txt
-autocmd BufNewFile  *.htm 0r ~/.mt.html
-endif
-" sometimez those fellers didnt work, so here goes ..
-"set tw=72
-" for java, the last will interfere with c programs
-set suffixesadd=.rb
-" for the gf or gc feature (goto file)
-"set path=.,/usr/include,/home/jdk/src/share/classes
-set path=.
-"set path=.,src/**,/usr/local/java/src/**
-"set path+=~/work/rail/cookbook/app/**
-"set path+=~/work/rail/cookbook/lib/**
-set path=.,/Users/rahul/work/projects/rbcurse/**
-set suffixesadd=.rb
-set includeexpr+=substitute(v:fname,'s$','','g')
+"   You can find me at http://spf13.com
+" }
 
-"set makeprg=ruby
-
-" desert is nice but comments not shown dimmer
-" default is nice but highlights hide cursor
-":colorscheme darkblue
-:colorscheme grb256
-" back to default, desert too noisy
-":colorscheme default # hides comments which i need to see
-
-" ===================================================================
-" Mapping of special keys - arrow keys and function keys.
-" ===================================================================
-" Buffer commands (split,move,delete) -
-"map <F8> :bd<C-M> map <C-Down>  <C-w>j
-map <C-Up>    <C-w>k
-map <C-Down>    <C-w>j
-map <C-Left>  <C-w>h
-map <C-Right> <C-w>l
-" these 2 rock, they expand the window they move into
-map <C-j> <C-W>j<C-w>_
-map <C-k> <C-W>k<C-w>_
-map <C-h> <C-w>h<C-w>_
-map <C-l> <C-w>l<C-w>_
-
-" cycle fast thru buffers ... i have removed <CR> since i often press
-" this accidentally and don't want to go next when i have splits
-" removed since yankring uses C-n and C-p and i love that
-"nnoremap <C-n> :bn
-"nnoremap <C-p> :bp
-nnoremap <m-n> :bn
-nnoremap <m-p> :bp
-" in insert mode C-n still gets next match, C-p prev match
-"
-" cycle fast thru errors ... I wasnt usiong this so lets make it buffers
-"map <m-n> :cn<cr>
-"map <m-p> :cp<cr>
-
-" open new window on gf
-map gf <C-W>f
-
-" goto class instance
-map gc gdb<C-W>f
-
-"set su+=.class
-"set sua=.java
-set includeexpr=substitute(v:fname,'\\.','/','g')
-
-"Expression to be used to transform the string found with the 'include'
-"    option to a file name.  Mostly useful to change "." to "/" for Java:
-set includeexpr=substitute(v:fname,'\\.','/','g')
-                    
-" code completion options
-"set complete=i,],.,b,w,t,k,.
-set complete=.,b
-" that menu drove me nuts!!
-" 2011-11-3 commented out to see what its like now
-"set completeopt=
-set dictionary=~/.vimKeywords
-
-" use ctrl-] for jumping to a tag, and ctrl-t to return.
-" use ctags *.java to create file named "tags". If you have a file
-" called "TAGS" then add that to path using "set tag=./tags,tags,/Users/rahul/work/game/TAGS"
-" use ctags 5.5.4 from ctags.sourceforge.net
-
-" added by rahul 2005-11-20 to handle devanagari hindi sanskrit
-set encoding=utf-8 fileencodings=
-
-if &t_Co > 2 || has("gui_running")
-inoremap =InsertTabWrapper ("forward")
-inoremap =InsertTabWrapper ("backward")
-function! InsertTabWrapper(direction) 
-  let col = col('.') - 1 
-  if !col || getline('.')[col - 1] !~ '\k' 
-    return "\" 
-  elseif "backward" == a:direction 
-    return "\" 
-  else 
-    return "\" 
-  endif 
-endfunction
-endif
-" abbreviations that have been put in typeit4me are clashing with these so some commented
-"abbr spir spiritual
-"abbr sepa separate
-"abbr occu occurence
-abbr occa occasional
-abbr nece necessary
-abbr dont don't
-abbr wont won't
-abbr Dont Don't
-abbr cant can't
-abbr didnt didn't
-abbr doesnt doesn't
-abbr thats that's
-abbr whats what's
-"abbr i I
-abbr yu you
-abbr yuo you
-abbr THat That
-abbr THe The
-abbr THey Them
-abbr THis This
-" added for ruby from http://wiki.rubygarden.org/Ruby/page/show/VimRubySupport
-filetype on
-syntax on
-filetype indent on    " Enable filetype-specific indenting
-filetype plugin on    " Enable filetype-specific plugins
-" 2006-06-05 4:45 PM intellisense in ruby
-autocmd FileType ruby,eruby,dsl set omnifunc=rubycomplete#Complete
-
-imap <S-CR> <ESC>:execute 'normal o' . EndToken()<CR>O
-" ruby stuff
-abbr yload mymap = YAML::load( File.open("config.yml"));
-abbr ydump File.open("config.yml", "w") { <bar> f <bar> YAML.dump( hash, f )}
-abbr fwrite  File.open(filename, 'w') {<bar>f<bar> f.write(str) }
-"abbr fappend File::append(filename, str); # require 'facets'
-abbr fappend File.open(filename,'a'){ <bar>f<bar> f.write text }
-"abbr #!ruby #!/usr/bin/env ruby -w
-
-" Wraps visual selection in an HTML tag
-vmap ,w <ESC>:call VisualHTMLTagWrap()<CR>
-vmap ,m <ESC>:call VisualMarkdownTagWrap()<CR>
-
-function! VisualHTMLTagWrap()
-     "let a:tag = toupper( input( "Tag to wrap block: ") )
-     let a:tag =  input( "Tag to wrap block: ") 
-     let a:jumpright = 2 + len( a:tag )
-     normal `<
-     let a:init_line = line( "." )
-     exe "normal i<".a:tag.">"
-     normal `>
-     let a:end_line = line( "." )
-     " Don't jump if we're on a new line
-     if( a:init_line == a:end_line )
-         " Jump right to compensate for the
-         " characters we've added
-         exe "normal ".a:jumpright."l"
-     endif
-     exe "normal a</".a:tag.">"
-endfunction
-
-function! VisualMarkdownTagWrap()
-     "let a:tag = toupper( input( "Tag to wrap block: ") )
-     let a:tag =  input( "Chars to wrap block: ") 
-     let braces_at_start = ['[','{','(','[','<']
-     let braces_at_end = [']','}',')',']','>']
-     let a:jumpright = 0 + len( a:tag )
-     normal `<
-     let a:init_line = line( "." )
-     exe "normal i".a:tag
-     normal `>
-     let a:end_line = line( "." )
-     " Don't jump if we're on a new line
-     if( a:init_line == a:end_line )
-         " Jump right to compensate for the
-         " characters we've added
-         exe "normal ".a:jumpright."l"
-     endif
-     let m = index(braces_at_start,a:tag)
-     if m >= 0
-         "exe "normal a".strpart(braces_at_end,m,1)
-         exe "normal a".get(braces_at_end,m,"")
-     else
-         exe "normal a".a:tag
-     endif
-endfunction
-" added 2009-10-28 15:04 to give me a method stub
-map ,f <ESC>:call MyRubyMethod()<CR>
-" see http://yard.soen.ca/getting_started.html#using
-function! MyRubyMethod()
-     exe ":set paste"
-     let a:tag =  input( "Enter Method name: ") 
-     let a:param =  input( "Parameters (comma sep): ") 
-     "exe ":r ! sed 's/method/" . a:tag . "/g' ~/.yard.rb"
-     let mylist = split(a:param, '[,\W]')
-     exe "normal o     ## "
-     exe "normal o     #  XXX Desc"
-     exe "normal o     #  "
-     for item in mylist
-         exe "normal o     # @param [String] ".item . " comment" 
-     endfor
-     exe "normal o     # @return [true, false] comment" 
-     exe "normal o    "
-     exe "normal o     def ".a:tag."(".a:param.")"
-     for item in mylist
-         exe "normal o       @".item . " = ".item . ";"
-     endfor
-     exe "normal o     end # ".a:tag
-     exe ":set nopaste"
-endfunction
-
-map ,p <ESC>:call MyRubyPMethod()<CR>
-function! MyRubyPMethod()
-     exe ":set paste"
-     let a:tagg =  input( "Enter property name: ") 
-     let a:date = system("date")
-     "exe ":r ! sed 's/symbol/" . a:tagg . "/g;s/DTS/" . a:date . "/g' ~/.method.rb"
-     exe ":r ! sed 's/symbol/" . a:tagg . "/g' ~/.method.rb"
-     exe ":set nopaste"
-endfunction
-
-
-"noreabbr pre, <pre style="margin: 1.5em 0px; padding: 10px 10px 10px 10px; color: #333; background: #000000;color:#ffffff; font-family: monaco,monospace; font-size: 120%; border-left: solid #ccc 1px; overflow: auto;">
-"noreabbr codesnip, <pre style="margin: 1.5em 0px; padding: 10px 10px 10px 10px; color: #333; background: #EFEFEF;color:#000016; font-family: courier,monospace; font-size: 120%; border: solid #ccc 2px; overflow: auto;">
-"noreabbr gpre, <pre  style="background: #333333; color: white; padding: 15px; border: 1px solid #666666; font-family: courier,monospace; font-size: 120%; overflow: auto;"><code><CR></code></pre>
-"
-
-" " post current file to livejournal account
-"map ;ljp :!ljpost.rb %<CR>
-
-abbr fread lines = File.open(file,'r').readlines
-
-nmap ,i viw;it<ESC>
-"nmap ,s O[[ slnc 1000 ]]<ESC>
-" map ,s [[ slnc 1000 ]]<ESC>
-"abbr ,s [[ slnc 5000 ]] 
-" visual area will be written to tmp file, new post file created and then new.sh
-" reads in the temp file 20080101 22:45:50
-":vmap #xxx :w! ~/tmp/post.tmp <CR>:!~/work/posts/new.sh<CR>
-" this was great once, but now conflicts with ,,L and others
-":map ,, a,<ESC>
-":map ,p i<CR>[[ slnc 1000 ]]<CR><ESC>
-
-" 2008-09-11 21:36 taglist plugin
-nnoremap <F8>   :TlistToggle
-":TlistAddFilesRecursive ~/work/ *.rb
-":TlistAddFiles *.rb
-
-
-map K :w<CR>:! ruby %
-map <F6> :!ruby %<CR>
-map <S-Enter> O<ESC> " awesome, inserts new line without going into insert mode
-" Professor VIM says '87% of users prefer jj over esc', jj abrams strongly
-" disagrees
-imap jj <Esc>
-imap kk <Esc>
-imap jk <Esc>:w<CR>
-imap hh =>
-"imap aa @
-" I often want to insert only one character and then navigate left or right
-" without having to do an ESC and then navigate. qa lets me insert just one and be back in command mode
-" Oops, now i cannot record, i use qq to record a macro
-map qa i.<ESC>r
-inoremap uu _
-
-" 2008-10-13 16:56 visual up and down on arrow key
-map <UP> gk
-map <DOWN> gj
-" often changing text till _. Also, @ used as instance var start
-":set iskeyword-=_
-"set iskeyword+=@
-" I used pastetoggle a lot when copying code
-:set pastetoggle=<F7>
-"map ;dl viWyi#{<ESC>ea}<ESC>
-" 2010-01-12 13:30 changed viW to viw so that commas don't get included.
-" I am also mapping dl and di to ll and li since dl can be destructive if 
-"  i type slowly
-map ;ll viWdi#{<ESC>pa}<ESC>
-map ;li viWdi#{@<ESC>pa}<ESC>
-"map ;di viWyi#{@<ESC>ea}<ESC>
-map ;db i$log.debug "DEBUG :
-noreabbr ,d $log.debug "XXX: 
-noreabbr ,w $log.warn "XXX: WARN 
-"" read up screens buffer (usually for backticks that mangle screen since its
-"" my escape key
-map ;pb o<ESC>:r ~/tmp/screen-buffer<CR>
-
-"abbr #!ruby #!/usr/bin/env ruby -w
-map ;hr  i#!/usr/bin/env ruby -w
-map ;hb  i#!/bin/bash
-
-" comment and uncomment with #
-" # ooooh, ./ was lovely but it really slowed down using the dot for repeat
-noremap ;/ :s/^\( *\)/\1#/<CR><Esc>:nohlsearch <CR>
-noremap ;? :s/^\( *\)#/\1/<CR><Esc>:nohlsearch <CR>
-" save
-noremap ;; :w<CR>
-inoremap ;; <ESC>:w<CR>
-" comments current line, since ;/ destroys current search.
-map ;co I#<Esc>A # <C-R>=strftime("%Y-%m-%d %H:%M:%S")<CR><ESC>j
-" http://vim.wikia.com/wiki/Easy_(un)commenting_out_of_source_code
-" in shell, go to definition of function
-autocmd FileType sh map <buffer> gf /^<C-R>=expand("<cword>")<cr><cr>
-autocmd FileType ruby map <buffer> gf /^ *def <C-R>=expand("<cword>")<cr><cr>
-autocmd FileType ruby map <buffer> gc /^ *class <C-R>=expand("<cword>")<cr><cr>
-" Use vims comment character instead of hash
-autocmd FileType vim map <buffer> ;/ :s/^\( *\)/\1"/<CR><Esc>:nohlsearch <CR>
-
-" center text and put # at both sides. spaces pad
-map ;c1 :center<CR>$80a <ESC>80\|Da#<ESC>0r#
-" center text and put # at both sides. hyphen pad
-map ;c2 :center<CR>$a <ESC>80a-<ESC>80\|lDbdwp0P2ldw80\|Da#<ESC>0r#
-" make a banner with stars
-" +taking extra care since comment formatting often already puts a # in next
-" +line
-map ;cba o<ESC>0D80a*<ESC>80\|r#0.
-map ;cbl o<ESC>0D80a <ESC>80\|r#0.
-" make banner with date
-map ;dd :r! date '+\%B \%d, \%Y'<CR>;c1
-"map ;dd :exe "normal o" . strftime("%B %d, %Y") <CR>;c1 
-" make banner with filename
-map ;d0 :r! echo %<CR>;c1
-"map ;d0 :exe "normal o" . expand("%:t") <CR>;c1
-map  ;dh ;cba;d0;dd;cbl;cba
-
-" align comments with # \t#
-map <silent> <Leader>a# \WS:'a,.s/#\([ \t]*\)\(.*\)$/###@@# \2/e<CR>'zk<Leader>tldW@:'y,'zs/^\(\s*\) @@/\1/e<CR>:'y,'zs/ @@ //eg<CR>:'y,'zs/###//eg<CR>\WE
-vmap <silent> <Leader>a# :<BS><BS><BS><CR>ma'><Leader>a#
-" puts a # around text. Puts final # at column 80. Caution: truncates
-" at 80 !!!
-let @q = "0:.s/^[ #]*//gi# $80a 80|Da#j"
-let @l = "0Di# 76a-a #j"
-"" puts a backtick around a word, containing a underscore, and word
-"" ending in () - replaces all in file ! - for markdown docs
-let @s = ':%s/ \([a-z]*_[a-z0-9_]*\)\>/ `\1`/g:%s/ \([a-z][a-z0-9]*()\)/ `\1`/g'
-
-"" surrounds current word with backticks - for markdown docs - use surround.vim ysiw
-let @c = 'viW`>a``<i`'
-let @o = 'yy^i#A # changed  :echo strftime("%Y-%m-%d %H:%M")p'
-let @o='yy^i#p'
-"let @o='^i#A # changed on :r! datebJ'
-"let @o='^i#A # changed on dts?kb?kb?kb2011-10-2 '
-"let @x = 'viwdpbXhr:'
-" convert a string to a symbol (ruby)
-let @x = 'elxbhr:'
-" place on a variable it duplicated the name and places #{ around it by
-" calling ;dl
-let @y = 'viwyPa w;llw'
-"let @d = 'viWyO,d pa: pa "b;dl'
-" create a log debugstatement for varaible under cursor on above line
-let @d = 'viWyO,d XXX pa: pa "b;dl'
-" write visual area to x.x - save and read into another terminal
-let @w = ':w! ~/tmp/x.x'
-" read  x.x
-let @r = ':r ~/tmp/x.x'
-" NOTE to save macro here press C-r C-r q (where q is macro character), see
-" :registers also
-if $TERM == 'screen'
-  set term=xterm-256color
-  let g:GNU_Screen_used = 1
-else
-  let g:GNU_Screen_used = 0
-endif
-"let @v=':%s/^.*DEBUG -- :/:/g'
-" place cursor on param in def, will created initialize and attr_reader
-let @i='viwyo   pa  = pI@kOattr_reader :p'
-" taken from http://bitbucket.org/number5/dotfiles/src/tip/dot.vimrc -
-" YIPPEE !i always wanted that white status line like emacs
-"set statusline=[%l,%c\ %P%M]\ %f\ %r%h%w
-set cmdheight=1
-set laststatus=2
-
-" open files in same location as current file (http://vimcasts.org/episodes/the-edit-command/)
-map <leader>ew :e <C-R>=expand("%:p:h") . "/"  <CR>
-" open in a split
-map <leader>es :sp <C-R>=expand("%:p:h") . "/" <CR>
-" in command mode do :sp %% (and it will expand to path/directory of current file
-cmap %% <C-R>=expand("%:p:h") . "/" <CR>
-
-"http://nvie.com/posts/how-i-boosted-my-vim/
-" Quickly edit/reload the vimrc file
-nmap <silent> <leader>ev :sp $MYVIMRC<CR>
-nmap <silent> <leader>sv :so $MYVIMRC<CR>
-nmap <leader>es :split ~/.vim/bundle/snipmate.vim/snippets/ruby.snippets<CR>
-nnoremap <leader>er :split ~/README<cr>
-nnoremap <leader>ez :split ~/.zshrc<cr>
-nnoremap <leader>ea :split ~/.oh-my-zsh/lib/aliases.zsh
-autocmd FileType ruby nmap <buffer> <silent> <leader>es :split ~/.vim/bundle/snipmate.vim/snippets/ruby.snippets
-"autocmd FileType sh nmap <buffer> <silent> <leader>es :split ~/.vim/bundle/snipmate.vim/snippets/sh.snippets
-" commented ww to try vimwiki which uses this
-"map <silent> <leader>ww  :w! ~/tmp/vimxfer<CR>
-map <silent> <leader>wa  :w!>> ~/tmp/vimxfer<CR>
-nmap <silent> <leader>rr  :r ~/tmp/vimxfer<CR>
-
-" save files when tabbing elsewhere: http://stevelosh.com/blog/2010/09/coming-home-to-vim/
-au FocusLost * :wa
-nnoremap <leader>a :Ack
-
-nnoremap <leader>ff :<C-u>FufFile **/<CR> 
-nnoremap <leader>fb :<C-u>FufBuffer<CR>
-let g:fuf_keyOpen = '<C-l>'
-let g:fuf_keyOpenSplit = '<CR>'
-nnoremap <leader>nt  :NERDTreeToggle
-nnoremap <leader>yr   :YRShow
-" t is alreadt mapped to align, so takes a second extra
-nnoremap <leader>c   :CommandT<CR>
-map <leader><leader> :CommandT<cr>
-
-map <silent> <F2> :NERDTreeToggle
-map <silent> <F3> :<C-u>FufFile **/<CR> 
-nnoremap <silent> <F4> :YRShow<cr>
-inoremap <silent> <F4> <ESC>:YRShow<cr>
-
-" extremely irritating
-"nnoremap / /\v
-"vnoremap / /\v
-set ignorecase
-set smartcase
-set gdefault
-nnoremap <leader><space> :noh<cr>
-"nnoremap <TAB> %
-nmap <TAB> %
-vnoremap <TAB> %
-" some 7.3 stuff
-"http://stevelosh.com/blog/2010/09/coming-home-to-vim/
-if version >= 703
-    "set relativenumber " i am tired of this 
-    "set cursorline  " looks awful - can't make out : ; and . ,
-    set ttyfast
-    set undofile
-    " added undodir on 2011-08-21 http://news.ycombinator.com/item?id=2907730
-    "
-    " changed to undodir since littering current. It is not saving in tmp.
-    set undodir=~/tmp/undodir
-    "set colorcolumn=85  " another pain since it masks character
-endif
-set formatoptions=qrn1
-
-inoremap <F1> <ESC>
-nnoremap <F1> <ESC>
-vnoremap <F1> <ESC>
-" reselect pasted text for indenting etc
-nnoremap <leader>v V`]
-" add nodoc at end of ruby method
-nnoremap <leader>no A  #:nodoc:<ESC>
-" for command-t to avoid pkg
-set wildignore+=pkg
-set wildignore+=*.log,*.bak,*.old,*.orig,*.tmp
-set wildmenu
-" full gives us enhanced menu at screen bottom, whereas list and longest switch it off
-set wildmode=full
-
-" often C-Cr and C-s are not working
-let CommandTAcceptSelectionSplitMap='<C-v>'
-
-au! BufNewFile,BufRead crontab.* set nobackup | set nowritebackup 
-" Taken from http://stackoverflow.com/questions/164847/what-is-in-your-vimrc
-" Search mappings: These will make it so that going to the next one in a
-" search will center on the line it's found in.
-"map N Nzz
-"map n nzz
-
-" execute file on :W
-" autocmd! FileType ruby set shiftwidth=2 softtabstop=2 tabstop=2 makeprg=ruby\ %
-"autocmd FileType ruby command -buffer W write | !ruby %
-"autocmd FileType sh command -buffer W write | !./%
-"  make file chmod +x auto
-autocmd BufWritePost * call NoExtNewFile()
-function! NoExtNewFile()
-    if getline(1) =~ "^#!.*/bin/"
-        if &filetype == ""
-            filetype detect
+" Environment {
+    " Basics {
+        set nocompatible        " must be first line
+        if has ("unix") && "Darwin" != system("echo -n \"$(uname)\"")
+          " on Linux use + register for copy-paste
+          set clipboard=unnamedplus
+        else
+          " one mac and windows, use * register for copy-paste
+          set clipboard=unnamed
         endif
-        silent !chmod a+x <afile>
+    " }
+
+    " Windows Compatible {
+        " On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
+        " across (heterogeneous) systems easier.
+        if has('win32') || has('win64')
+          set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
+        endif
+    " }
+
+    " Filetype Workarounds {
+        " Temporary workaround to Better-CSS-Syntax-for-Vim
+        " See https://github.com/ChrisYip/Better-CSS-Syntax-for-Vim/issues/9
+        " for more information
+        autocmd BufNewFile,BufRead *.scss set filetype=css
+        autocmd BufNewFile,BufRead *.sass set filetype=css
+    " }
+
+    " Setup Bundle Support {
+    " The next three lines ensure that the ~/.vim/bundle/ system works
+        filetype on
+        filetype off
+        set rtp+=~/.vim/bundle/vundle
+        call vundle#rc()
+    " }
+
+" }
+
+" Bundles {
+    " Use local bundles if available {
+        if filereadable(expand("~/.vimrc.bundles.local"))
+            source ~/.vimrc.bundles.local
+        endif
+    " }
+    " Use fork bundles if available {
+        if filereadable(expand("~/.vimrc.bundles.fork"))
+            source ~/.vimrc.bundles.fork
+        endif
+    " }
+    " Use bundles config {
+        if filereadable(expand("~/.vimrc.bundles"))
+            source ~/.vimrc.bundles
+        endif
+    " }
+" }
+
+" General {
+    set background=dark         " Assume a dark background
+    if !has('gui')
+        "set term=$TERM          " Make arrow and other keys work
+    endif
+    filetype plugin indent on   " Automatically detect file types.
+    syntax on                   " syntax highlighting
+    set mouse=a                 " automatically enable mouse usage
+    scriptencoding utf-8
+
+    " Most prefer to automatically switch to the current file directory when
+    " a new buffer is opened; to prevent this behavior, add
+    " let g:spf13_no_autochdir = 1 to your .vimrc.bundles.local file
+    if !exists('g:spf13_no_autochdir')
+        autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
+        " always switch to the current file directory.
+    endif
+
+    " set autowrite                  " automatically write a file when leaving a modified buffer
+    set shortmess+=filmnrxoOtT      " abbrev. of messages (avoids 'hit enter')
+    set viewoptions=folds,options,cursor,unix,slash " better unix / windows compatibility
+    set virtualedit=onemore         " allow for cursor beyond last character
+    set history=1000                " Store a ton of history (default is 20)
+    set spell                       " spell checking on
+    set hidden                      " allow buffer switching without saving
+
+    " Setting up the directories {
+        set backup                      " backups are nice ...
+        if has('persistent_undo')
+            set undofile                "so is persistent undo ...
+            set undolevels=1000         "maximum number of changes that can be undone
+            set undoreload=10000        "maximum number lines to save for undo on a buffer reload
+        endif
+
+    " To disable views set
+    " g:spf13_no_views = 1
+    " in your .vimrc.bundles.local file"
+    if !exists('g:spf13_no_views')
+        " Could use * rather than *.*, but I prefer to leave .files unsaved
+        au BufWinLeave *.* silent! mkview  "make vim save view (state) (folds, cursor, etc)
+        au BufWinEnter *.* silent! loadview "make vim load view (state) (folds, cursor, etc)
+    endif
+    " }
+" }
+
+" Vim UI {
+    if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"))
+        let g:solarized_termcolors=256
+        color solarized                 " load a colorscheme
+    endif
+        let g:solarized_termtrans=1
+        let g:solarized_contrast="high"
+        let g:solarized_visibility="high"
+    set tabpagemax=15               " only show 15 tabs
+    set showmode                    " display the current mode
+
+    set cursorline                  " highlight current line
+
+    if has('cmdline_info')
+        set ruler                   " show the ruler
+        set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " a ruler on steroids
+        set showcmd                 " show partial commands in status line and
+                                    " selected characters/lines in visual mode
+    endif
+
+    if has('statusline')
+        set laststatus=2
+
+        " Broken down into easily includeable segments
+        set statusline=%<%f\    " Filename
+        set statusline+=%w%h%m%r " Options
+        set statusline+=%{fugitive#statusline()} "  Git Hotness
+        set statusline+=\ [%{&ff}/%Y]            " filetype
+        set statusline+=\ [%{getcwd()}]          " current dir
+        set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
+    endif
+
+    set backspace=indent,eol,start  " backspace for dummies
+    set linespace=0                 " No extra spaces between rows
+    set nu                          " Line numbers on
+    set showmatch                   " show matching brackets/parenthesis
+    set incsearch                   " find as you type search
+    set hlsearch                    " highlight search terms
+    set winminheight=0              " windows can be 0 line high
+    set ignorecase                  " case insensitive search
+    set smartcase                   " case sensitive when uc present
+    set wildmenu                    " show list instead of just completing
+    set wildmode=list:longest,full  " command <Tab> completion, list matches, then longest common part, then all.
+    set whichwrap=b,s,h,l,<,>,[,]   " backspace and cursor keys wrap to
+    set scrolljump=5                " lines to scroll when cursor leaves screen
+    set scrolloff=3                 " minimum lines to keep above and below cursor
+    set foldenable                  " auto fold code
+    set list
+    set listchars=tab:,.,trail:.,extends:#,nbsp:. " Highlight problematic whitespace
+
+
+" }
+
+" Formatting {
+    set nowrap                      " wrap long lines
+    set autoindent                  " indent at the same level of the previous line
+    set shiftwidth=4                " use indents of 4 spaces
+    set expandtab                   " tabs are spaces, not tabs
+    set tabstop=4                   " an indentation every four columns
+    set softtabstop=4               " let backspace delete indent
+    "set matchpairs+=<:>                " match, to be used with %
+    set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
+    "set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
+    " Remove trailing whitespaces and ^M chars
+    autocmd FileType c,cpp,java,php,javascript,python,twig,xml,yml autocmd BufWritePre <buffer> :call setline(1,map(getline(1,"$"),'substitute(v:val,"\\s\\+$","","")'))
+    autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
+" }
+
+" Key (re)Mappings {
+
+    "The default leader is '\', but many people prefer ',' as it's in a standard
+    "location. To override this behavior and set it back to '\' (or any other
+    "character) add let g:spf13_leader='\' in your .vimrc.bundles.local file
+    if !exists('g:spf13_leader')
+        let mapleader = ','
+    else
+        let mapleader=g:spf13_leader
+    endif
+
+    " Easier moving in tabs and windows
+    map <C-J> <C-W>j<C-W>_
+    map <C-K> <C-W>k<C-W>_
+    map <C-L> <C-W>l<C-W>_
+    map <C-H> <C-W>h<C-W>_
+
+    " Wrapped lines goes down/up to next row, rather than next line in file.
+    nnoremap j gj
+    nnoremap k gk
+
+    " The following two lines conflict with moving to top and bottom of the
+    " screen
+    " If you prefer that functionality, add let g:spf13_no_fastTabs = 1 in
+    " your .vimrc.bundles.local file
+
+    if !exists('g:spf13_no_fastTabs')
+        map <S-H> gT
+        map <S-L> gt
+    endif
+
+    " Stupid shift key fixes
+    if !exists('g:spf13_no_keyfixes')
+        if has("user_commands")
+            command! -bang -nargs=* -complete=file E e<bang> <args>
+            command! -bang -nargs=* -complete=file W w<bang> <args>
+            command! -bang -nargs=* -complete=file Wq wq<bang> <args>
+            command! -bang -nargs=* -complete=file WQ wq<bang> <args>
+            command! -bang Wa wa<bang>
+            command! -bang WA wa<bang>
+            command! -bang Q q<bang>
+            command! -bang QA qa<bang>
+            command! -bang Qa qa<bang>
+        endif
+
+        cmap Tabe tabe
+    endif
+
+    " Yank from the cursor to the end of the line, to be consistent with C and D.
+    nnoremap Y y$
+
+    """ Code folding options
+    nmap <leader>f0 :set foldlevel=0<CR>
+    nmap <leader>f1 :set foldlevel=1<CR>
+    nmap <leader>f2 :set foldlevel=2<CR>
+    nmap <leader>f3 :set foldlevel=3<CR>
+    nmap <leader>f4 :set foldlevel=4<CR>
+    nmap <leader>f5 :set foldlevel=5<CR>
+    nmap <leader>f6 :set foldlevel=6<CR>
+    nmap <leader>f7 :set foldlevel=7<CR>
+    nmap <leader>f8 :set foldlevel=8<CR>
+    nmap <leader>f9 :set foldlevel=9<CR>
+
+    "clearing highlighted search
+    nmap <silent> <leader>/ :nohlsearch<CR>
+
+    " Shortcuts
+    " Change Working Directory to that of the current file
+    cmap cwd lcd %:p:h
+    cmap cd. lcd %:p:h
+
+    " visual shifting (does not exit Visual mode)
+    vnoremap < <gv
+    vnoremap > >gv
+
+    " Fix home and end keybindings for screen, particularly on mac
+    " - for some reason this fixes the arrow keys too. huh.
+    map [F $
+    imap [F $
+    map [H g0
+    imap [H g0
+
+    " For when you forget to sudo.. Really Write the file.
+    cmap w!! w !sudo tee % >/dev/null
+
+    " Some helpers to edit mode
+    " http://vimcasts.org/e/14
+    cnoremap %% <C-R>=expand('%:h').'/'<cr>
+    map <leader>ew :e %%
+    map <leader>es :sp %%
+    map <leader>ev :vsp %%
+    map <leader>et :tabe %%
+
+    " Adjust viewports to the same size
+    map <Leader>= <C-w>=
+
+    " Easier horizontal scrolling
+    map zl zL
+    map zh zH
+" }
+
+" Plugins {
+
+    " PIV {
+        let g:DisableAutoPHPFolding = 0
+        let g:PIVAutoClose = 0
+    " }
+
+    " Misc {
+        let g:NERDShutUp=1
+        let b:match_ignorecase = 1
+    " }
+
+    " OmniComplete {
+        if has("autocmd") && exists("+omnifunc")
+            autocmd Filetype *
+                \if &omnifunc == "" |
+                \setlocal omnifunc=syntaxcomplete#Complete |
+                \endif
+        endif
+
+        hi Pmenu  guifg=#000000 guibg=#F8F8F8 ctermfg=black ctermbg=Lightgray
+        hi PmenuSbar  guifg=#8A95A7 guibg=#F8F8F8 gui=NONE ctermfg=darkcyan ctermbg=lightgray cterm=NONE
+        hi PmenuThumb  guifg=#F8F8F8 guibg=#8A95A7 gui=NONE ctermfg=lightgray ctermbg=darkcyan cterm=NONE
+
+        " some convenient mappings
+        inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
+        inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
+        inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
+        inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
+        inoremap <expr> <C-d>      pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
+        inoremap <expr> <C-u>      pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
+
+        " automatically open and close the popup menu / preview window
+        au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
+        set completeopt=menu,preview,longest
+    " }
+
+    " Ctags {
+        set tags=./tags;/,~/.vimtags
+    " }
+
+    " AutoCloseTag {
+        " Make it so AutoCloseTag works for xml and xhtml files as well
+        au FileType xhtml,xml ru ftplugin/html/autoclosetag.vim
+        nmap <Leader>ac <Plug>ToggleAutoCloseMappings
+    " }
+
+    " SnipMate {
+        " Setting the author var
+        " If forking, please overwrite in your .vimrc.local file
+        let g:snips_author = 'Steve Francia <steve.francia@gmail.com>'
+    " }
+
+    " NerdTree {
+        map <C-e> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
+        map <leader>e :NERDTreeFind<CR>
+        nmap <leader>nt :NERDTreeFind<CR>
+
+        let NERDTreeShowBookmarks=1
+        let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
+        let NERDTreeChDirMode=0
+        let NERDTreeQuitOnOpen=1
+        let NERDTreeMouseMode=2
+        let NERDTreeShowHidden=1
+        let NERDTreeKeepTreeInNewTab=1
+        let g:nerdtree_tabs_open_on_gui_startup=0
+    " }
+
+    " Tabularize {
+        nmap <Leader>a= :Tabularize /=<CR>
+        vmap <Leader>a= :Tabularize /=<CR>
+        nmap <Leader>a: :Tabularize /:<CR>
+        vmap <Leader>a: :Tabularize /:<CR>
+        nmap <Leader>a:: :Tabularize /:\zs<CR>
+        vmap <Leader>a:: :Tabularize /:\zs<CR>
+        nmap <Leader>a, :Tabularize /,<CR>
+        vmap <Leader>a, :Tabularize /,<CR>
+        nmap <Leader>a<Bar> :Tabularize /<Bar><CR>
+        vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
+     " }
+
+     " Session List {
+        set sessionoptions=blank,buffers,curdir,folds,tabpages,winsize
+        nmap <leader>sl :SessionList<CR>
+        nmap <leader>ss :SessionSave<CR>
+     " }
+
+     " Buffer explorer {
+        nmap <leader>b :BufExplorer<CR>
+     " }
+
+     " JSON {
+        nmap <leader>jt <Esc>:%!python -m json.tool<CR><Esc>:set filetype=json<CR>
+     " }
+
+     " PyMode {
+        let g:pymode_lint_checker = "pyflakes"
+     " }
+
+     " ctrlp {
+        let g:ctrlp_working_path_mode = 2
+        nnoremap <silent> <D-t> :CtrlP<CR>
+        nnoremap <silent> <D-r> :CtrlPMRU<CR>
+        let g:ctrlp_custom_ignore = {
+            \ 'dir':  '\.git$\|\.hg$\|\.svn$',
+            \ 'file': '\.exe$\|\.so$\|\.dll$' }
+     "}
+
+     " TagBar {
+        nnoremap <silent> <leader>tt :TagbarToggle<CR>
+     "}
+
+     " PythonMode {
+     " Disable if python support not present
+        if !has('python')
+           let g:pymode = 1
+        endif
+     " }
+
+     " Fugitive {
+        nnoremap <silent> <leader>gs :Gstatus<CR>
+        nnoremap <silent> <leader>gd :Gdiff<CR>
+        nnoremap <silent> <leader>gc :Gcommit<CR>
+        nnoremap <silent> <leader>gb :Gblame<CR>
+        nnoremap <silent> <leader>gl :Glog<CR>
+        nnoremap <silent> <leader>gp :Git push<CR>
+     "}
+
+     " neocomplcache {
+        let g:neocomplcache_enable_at_startup = 1
+        let g:neocomplcache_enable_camel_case_completion = 1
+        let g:neocomplcache_enable_smart_case = 1
+        let g:neocomplcache_enable_underbar_completion = 1
+        let g:neocomplcache_min_syntax_length = 3
+        let g:neocomplcache_enable_auto_delimiter = 1
+        let g:neocomplcache_max_list = 15
+        let g:neocomplcache_auto_completion_start_length = 3
+        let g:neocomplcache_force_overwrite_completefunc = 1
+        let g:neocomplcache_snippets_dir='~/.vim/bundle/snipmate-snippets/snippets'
+
+        " AutoComplPop like behavior.
+        let g:neocomplcache_enable_auto_select = 0
+
+        " SuperTab like snippets behavior.
+        imap  <silent><expr><tab>  neocomplcache#sources#snippets_complete#expandable() ? "\<plug>(neocomplcache_snippets_expand)" : (pumvisible() ? "\<c-e>" : "\<tab>")
+        smap  <tab>  <right><plug>(neocomplcache_snippets_jump) 
+
+        " Plugin key-mappings.
+        " Ctrl-k expands snippet & moves to next position
+        " <CR> chooses highlighted value
+        imap <C-k>     <Plug>(neocomplcache_snippets_expand)
+        smap <C-k>     <Plug>(neocomplcache_snippets_expand)
+        inoremap <expr><C-g>   neocomplcache#undo_completion()
+        inoremap <expr><C-l>   neocomplcache#complete_common_string()
+        inoremap <expr><CR>    neocomplcache#complete_common_string()
+
+
+        " <CR>: close popup
+        " <s-CR>: close popup and save indent.
+        inoremap <expr><s-CR> pumvisible() ? neocomplcache#close_popup()"\<CR>" : "\<CR>"
+        inoremap <expr><CR>  pumvisible() ? neocomplcache#close_popup() : "\<CR>"
+
+        " <TAB>: completion.
+        inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+        inoremap <expr><s-TAB>  pumvisible() ? "\<C-p>" : "\<TAB>"
+
+        " <C-h>, <BS>: close popup and delete backword char.
+        inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+        inoremap <expr><C-y>  neocomplcache#close_popup()
+
+        " Define keyword.
+        if !exists('g:neocomplcache_keyword_patterns')
+          let g:neocomplcache_keyword_patterns = {}
+        endif
+        let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+
+        " Enable omni completion.
+        autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+        autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+        autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+        autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+        autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+        autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
+
+        " Enable heavy omni completion.
+        if !exists('g:neocomplcache_omni_patterns')
+            let g:neocomplcache_omni_patterns = {}
+        endif
+        let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
+        let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+        let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
+        let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
+
+        " For snippet_complete marker.
+        if has('conceal')
+            set conceallevel=2 concealcursor=i
+        endif
+
+     " }
+
+     " UndoTree {
+        nnoremap <Leader>u :UndotreeToggle<CR>
+     " }
+
+     " indent_guides {
+        if !exists('g:spf13_no_indent_guides_autocolor')
+            let g:indent_guides_auto_colors = 1
+        else
+            " for some colorscheme ,autocolor will not work,like 'desert','ir_black'.
+            autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#212121   ctermbg=3
+            autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#404040 ctermbg=4
+        endif
+        set ts=4 sw=4 et
+        let g:indent_guides_start_level = 2
+        let g:indent_guides_guide_size = 1
+        let g:indent_guides_enable_on_vim_startup = 1
+     " }
+
+" }
+
+" GUI Settings {
+    " GVIM- (here instead of .gvimrc)
+    if has('gui_running')
+        set guioptions-=T           " remove the toolbar
+        set lines=40                " 40 lines of text instead of 24,
+        if has("gui_gtk2")
+            set guifont=Andale\ Mono\ Regular\ 16,Menlo\ Regular\ 15,Consolas\ Regular\ 16,Courier\ New\ Regular\ 18
+        else
+            set guifont=Andale\ Mono\ Regular:h16,Menlo\ Regular:h15,Consolas\ Regular:h16,Courier\ New\ Regular:h18
+        endif
+        if has('gui_macvim')
+            set transparency=5          " Make the window slightly transparent
+        endif
+    else
+        if &term == 'xterm' || &term == 'screen'
+            set t_Co=256                 " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
+        endif
+        "set term=builtin_ansi       " Make arrow and other keys work
+    endif
+" }
+
+ " Functions {
+
+function! InitializeDirectories()
+    let separator = "."
+    let parent = $HOME
+    let prefix = '.vim'
+    let dir_list = {
+                \ 'backup': 'backupdir',
+                \ 'views': 'viewdir',
+                \ 'swap': 'directory' }
+
+    if has('persistent_undo')
+        let dir_list['undo'] = 'undodir'
+    endif
+
+    for [dirname, settingname] in items(dir_list)
+        let directory = parent . '/' . prefix . dirname . "/"
+        if exists("*mkdir")
+            if !isdirectory(directory)
+                call mkdir(directory)
+            endif
+        endif
+        if !isdirectory(directory)
+            echo "Warning: Unable to create backup directory: " . directory
+            echo "Try: mkdir -p " . directory
+        else
+            let directory = substitute(directory, " ", "\\\\ ", "g")
+            exec "set " . settingname . "=" . directory
+        endif
+    endfor
+endfunction
+call InitializeDirectories()
+
+function! NERDTreeInitAsNeeded()
+    redir => bufoutput
+    buffers!
+    redir END
+    let idx = stridx(bufoutput, "NERD_tree")
+    if idx > -1
+        NERDTreeMirror
+        NERDTreeFind
+        wincmd l
     endif
 endfunction
-" reload vimrc
-autocmd! BufWritePost .vimrc source %
-set swapfile 
-noremap <Space> <PageDown>
-noremap - <PageUp>
-" go to alt file
-nnoremap ` <c-^>
-" goto exact column, not just line
-nnoremap ' `
-abbr FN FFI::NCurses
+" }
 
-"https://bitbucket.org/sjl/dotfiles/src/1b6ffba66e9f/vim/.vimrc#cl-1023
-augroup ft_statuslinecolor
-    au!
-    au InsertEnter * hi StatusLine ctermbg=red guifg=#FF3145
-    au InsertLeave * hi StatusLine ctermbg=darkblue ctermfg=white guifg=#CD5907
+" Use fork vimrc if available {
+    if filereadable(expand("~/.vimrc.fork"))
+        source ~/.vimrc.fork
+    endif
+" }
+" Use local vimrc if available {
+    if filereadable(expand("~/.vimrc.local"))
+        source ~/.vimrc.local
+    endif
+" }
 
-
-    " steve's default, but i can't see text on statusline often
-    "au InsertEnter * hi StatusLine ctermfg=196 guifg=#FF3145
-    "au InsertLeave * hi StatusLine ctermfg=130 guifg=#CD5907
-
-
-
-    
-
-augroup END
-noremap H ^
-noremap L $
-
-function! EatChar(pat)
-    let c = nr2char(getchar(0))
-    return (c =~ a:pat) ? '' : c
-endfunction
-
-function! MakeSpacelessIabbrev(from, to)
-    execute "iabbrev <silent> ".a:from." ".a:to."<C-R>=EatChar('\\s')<CR>"
-endfunction
-
-call MakeSpacelessIabbrev('gh/',  'http://github.com/')
-call MakeSpacelessIabbrev('ghr/', 'http://github.com/rkumar/rbcurse/')
-
-" Heresy
-inoremap <c-a> <esc>I
-inoremap <c-e> <esc>A
-
-" Open a Quickfix window for the last search.
-nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
-
-" Ack for the last search.
-nnoremap <silent> <leader>? :execute "Ack! '" . substitute(substitute(substitute(@/, "\\\\<", "\\\\b", ""), "\\\\>", "\\\\b", ""), "\\\\v", "", "") . "'"<CR>
-
-" only Mac Vim
-    if has("gui_macvim")
-        set guifont=Menlo\ Regular:h18
-        set fuoptions=maxvert,maxhorz
-        noremap  <F1> :set invfullscreen<CR>
-        inoremap <F1> <ESC>:set invfullscreen<CR>a
-    end
-
-
-set statusline=%f    " Path.
-set statusline+=%m   " Modified flag.
-set statusline+=%r   " Readonly flag.
-set statusline+=%w   " Preview window flag.
-" Add time since I am using fullscreen on Lion
-" I've got the time on screens caption so i don't need it 
-"set statusline+=\ \ %{strftime(\"%d/%m/%y\ -\ \%l:%M\ %p\ ~\ %a\")}
-set statusline+=\ \ %{strftime(\"\%l:%M\ %p\ ~\ %a\")}
-""
-set statusline+=\    " Space.
-""
-set statusline+=%#redbar#                " Highlight the following as a warning.
-set statusline+=%{SyntasticStatuslineFlag()} " Syntastic errors.
-set statusline+=%*                           " Reset highlighting.
-""
-set statusline+=%=   " Right align.
-"
-"
-"" Line and column position and counts.
-"set statusline+=\ (line\ %l\/%L,\ col\ %03c)
-set statusline+=\ \ %l,%c\ \ \ \ \ %P
-"set statusline=[%l,%c\ %P%M]\ %f\ %r%h%w
-"
-inoremap # X<BS>#
-" swap two woeds, even if there's a comma or = in between switch exchange
-nmap <silent> gw "_yiw:s/\(\%#\w\+\)\(\W\+\)\(\w\+\)/\3\2\1/<cr><c-o><c-l>
-
-" =============================================================================
-" Abbreviations - General Editing - Inserting Dates and Times
-" =============================================================================
-"
-" First, some command to add date stamps (with and without time).
-" I use these manually after a substantial change to a webpage.
-" [These abbreviations are used with the mapping for ",L".]
-"
-  iab Ydate <C-R>=strftime("%y%m%d")<CR>
-" Example: 020523
-
-  "iab Cdate <C-R>=strftime("%d.%m.%y - %H:%M")<CR>
-  iab Cdate <C-R>=strftime("%Y-%m-%d - %H:%M")<CR>
-" Example: 23.05.02 - 17:06
-"
-  iab Ytime <C-R>=strftime("%H:%M")<CR>
-" Example: 17:06
-"
-" man strftime:     %T      time as %H:%M:%S
-" iab YDT           <C-R>=strftime("%y%m%d %T")<CR>
-" Example: 971027 12:00:00
-"
-" man strftime:     %X      locale's appropriate time representation
-  iab YDT           <C-R>=strftime("%y%m%d %X")<CR>
-" Example: 020523 17:06:49
-"
-  iab YDATE <C-R>=strftime("%a %b %d %T %Z %Y")<CR>
-" Example: Don Mai 23 17:06:56 CEST 2002
-
-" file name
-  iab YFF  <C-R>=expand("%:t")<CR>
-" =============================================================================
-" Inserting Dates and Times / Updating Date+Time Stamps
-" =============================================================================
-"     ,L  = "Last update" - replace old time stamp with a new one
-"        preserving whitespace and using internal "strftime" command:
-"       requires the abbreviation  "YDATE"
-  map ,L  1G/Latest change\s*:\s*/e+1<CR>CYDATE<ESC>
-  map ,,L 1G/Last update\s*:\s*/e+1<CR>CCdate<ESC>
-  map ,,,L 1G/Last Change\s*:\s*/e+1<CR>CYDT<ESC>
-  map ,,F 1G/ File\s*:\s*/e+1<CR>CYFF<ESC>
-  map ,,N 1G/ Name\s*:\s*/e+1<CR>CYFF<ESC>
-  map ,,D 1G/ Date\s*:\s*/e+1<CR>CCdate<ESC>
-" yank til end of line, i've never used Y for entire line
-map Y y$
-" 020628 The following code will add a function heading and position your
-" cursor just after Description so that one can document as one proceeds with
-" code.
-function! FileHeading()
-     exe "normal gg"
-     " nopaste results in the lines getting indented
-     " paste means that the file name and date will not expand, so i have to issue
-     " commands to do the replace afterwards.
-     exe ":set paste"
-     "exe ":set noai"
-     exe "normal O# ----------------------------------------------------------------------------- #"
-     exe "normal o#         File: YFF "
-     exe "normal o#  Description: "
-     exe "normal o#       Author: rkumar http://github.com/rkumar/rbcurse/"
-     exe "normal o#         Date: Cdate "
-     exe "normal o#      License: Same as Ruby's License (http://www.ruby-lang.org/LICENSE.txt)"
-     exe "normal o#  Last update: use ,,L"
-     exe "normal o#"
-     exe "normal O# ----------------------------------------------------------------------------- #"
-     exe ":set nopaste"
-     exe "normal ,,F"
-     exe "normal ,,D"
-endfunction
-" -> define the keymapping:
-map ,fh <esc>mz:execute FileHeading()<CR>`zjj
-"
-" Sudo to write
-cmap w!! w !sudo tee % >/dev/null
-
-inoremap  <Up>     <NOP>
-inoremap  <Down>   <NOP>
-inoremap  <Left>   <NOP>
-inoremap  <Right>  <NOP>
-noremap   <Up>     <NOP>
-noremap   <Down>   <NOP>
-noremap   <Left>   <NOP>
-noremap   <Right>  <NOP>
-"nnoremap <CR> o<ESC>
-
-" Open a Quickfix window for the last search. sjl
-nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
-
-" Ack for the last search.
-nnoremap <silent> <leader>? :execute "Ack! '" . substitute(substitute(substitute(@/, "\\\\<", "\\\\b", ""), "\\\\>", "\\\\b", ""), "\\\\v", "", "") . "'"<CR>
-
-" http://news.ycombinator.com/item?id=3251743
-let g:SuperTabDefaultCompletionType = "context"
+" Use local gvimrc if available and gui is running {
+    if has('gui_running')
+        if filereadable(expand("~/.gvimrc.local"))
+            source ~/.gvimrc.local
+        endif
+    endif
+" }
