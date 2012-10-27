@@ -1,5 +1,37 @@
 "let g:spf13_bundle_groups=['general', 'neocomplcache', 'programming', 'php', 'ruby', 'python', 'javascript', 'html', 'misc', 'scala']
-let g:spf13_bundle_groups=['general', 'neocomplcache', 'programming', 'html' ]
-Bundle 'vim-scripts/vimwiki.git'
-Bundle 'HTML.zip'
+"let g:spf13_bundle_groups=['general', 'neocomplcache', 'programming', 'html' ]
+" spf13 sets to onemore, don't know if its required by some plugin but its
+" crappy and changes behavior of 'x' and puts cursor past $
+set virtualedit=
+Bundle 'tomtom/viki_vim'
+Bundle 'tomtom/trag_vim'
+Bundle 'tomtom/vikitasks_vim'
+if $VIMBUNDLES == 'WIKI'
+    let g:override_spf13_bundles = 1
+    Bundle 'vim-scripts/vimwiki.git'
+    Bundle 'HTML.zip'
+    Bundle 'tpope/vim-markdown'
+    "# fugitive added or else statusline gives error
+    Bundle 'tpope/vim-fugitive'
+    Bundle 'tpope/vim-surround'
+    "Bundle 'altercation/vim-colors-solarized'
+    " to avoid errors since a lot of mappings of neo in .vimrc 
+    Bundle 'Shougo/neocomplcache'
+    Bundle 'spf13/vim-preview'
+    "exe "hi! CursorLine"     .s:fmt_uopt   .s:fg_none   .s:bg_base02  .s:sp_base1
+    "hi CursorLine     guifg=NONE        guibg=#121212     gui=NONE      ctermfg=NONE        ctermbg=blue
+    "exe "hi! CursorLine"     .s:fmt_uopt   .s:fg_none   .s:bg_base02  .s:sp_base1
+elseif $VIMBUNDLES == 'QT'
+    let g:override_spf13_bundles = 1
+    Bundle 'aaronbieber/quicktask.git'
+    Bundle 'fmoralesc/vim-pad.git'
+    Bundle 'vimoutliner/vimoutliner.git'
+    Bundle 'tpope/vim-markdown'
+else
+    let g:spf13_bundle_groups=['general', 'neocomplcache', 'programming' ]
+endif
 let g:spf13_leader='\'
+let g:pad_dir = "~/notes/"
+    " To override all the included bundles, put
+    " g:override_spf13_bundles = 1
+    " in your .vimrc.bundles.local file"

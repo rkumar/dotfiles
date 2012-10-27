@@ -133,7 +133,10 @@ set includeexpr+=substitute(v:fname,'s$','','g')
 "":colorscheme darkblue
 "" I used grb256, but it was custom hacked, will have to check it someday,
 "" spf13 is fine
-":colorscheme grb256
+if $VIMBUNDLES == 'WIKI'
+  :colorscheme grb256
+endif
+
 "" back to default, desert too noisy
 "":colorscheme default # hides comments which i need to see
 
@@ -515,6 +518,8 @@ nmap <silent> <leader>rr  :r ~/tmp/vimxfer<CR>
 " save files when tabbing elsewhere: http://stevelosh.com/blog/2010/09/coming-home-to-vim/
 au FocusLost * :wa
 nnoremap <leader>a :Ack
+" The next is required to search text files
+nnoremap <leader>A :Ack -a 
 
 nnoremap <leader>ff :<C-u>FufFile **/<CR> 
 nnoremap <leader>fb :<C-u>FufBuffer<CR>
@@ -523,11 +528,13 @@ let g:fuf_keyOpenSplit = '<CR>'
 nnoremap <leader>nt  :NERDTreeToggle
 nnoremap <leader>yr   :YRShow
 " t is alreadt mapped to align, so takes a second extra
-nnoremap <leader>c   :CommandT<CR>
-map <leader><leader> :CommandT<cr>
+" no longer using contrl-t -- i was happy with fuzzy finder
+"nnoremap <leader>c   :CommandT<CR>
+"map <leader><leader> :CommandT<cr>
 
-map <silent> <F2> :NERDTreeToggle
-map <silent> <F3> :<C-u>FufFile **/<CR> 
+"map <silent> <F2> :NERDTreeToggle
+") I need to install this again, F3 used by numbers.vim
+"map <silent> <F3> :<C-u>FufFile **/<CR> 
 nnoremap <silent> <F4> :YRShow<cr>
 inoremap <silent> <F4> <ESC>:YRShow<cr>
 
