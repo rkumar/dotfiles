@@ -1,0 +1,8 @@
+vimrc.20101019 is my original vimrc.
+
+Then I moved to spf13 and then moved back.
+
+So the current $HOME/.vimrc links to vimrc.minimal. which takes from
+the vimrc.20101019 but uses bundles and tries to be conditional in loading them.
+vimrc.20101019 moved moves moving moved moving moved
+moved 20101019 
