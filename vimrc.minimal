@@ -51,6 +51,8 @@ set ruler		" show the cursor position all the time - is superceded by statusline
         Bundle 'ervandew/supertab'
         " ysiw <char> , cs , ds
         Bundle 'tpope/vim-surround'
+        " should not really add this here, but testing out nota
+        Bundle 'vim-scripts/vimwiki.git'
     endif
     if $VIMBUNDLES == 'VIKI'
         " viki requires tlib (for file lists and task lists) trag (for file lists) and vikitasks
@@ -170,7 +172,8 @@ if has("autocmd")
     autocmd BufNewFile  *.htm 0r ~/.mt.html
 endif
 set path=.,/Users/rahul/work/projects/rbcurse/**
-:colorscheme grb256
+":colorscheme grb256
+:colorscheme minimal
 " back to default, desert too noisy
 ":colorscheme default # hides comments which i need to see
 
@@ -361,7 +364,8 @@ vmap <silent> <Leader>a# :<BS><BS><BS><CR>ma'><Leader>a#
 " puts a # around text. Puts final # at column 80. Caution: truncates
 " at 80 !!!
 let @q = "0:.s/^[ #]*//gi# $80a 80|Da#j"
-let @l = "0Di# 76a-a #j"
+" not sure if next used, now using l for autolinking of url
+"let @l = "0Di# 76a-a #j"
 "" puts a backtick around a word, containing a underscore, and word
 "" ending in () - replaces all in file ! - for markdown docs
 let @s = ':%s/ \([a-z]*_[a-z0-9_]*\)\>/ `\1`/g:%s/ \([a-z][a-z0-9]*()\)/ `\1`/g'
@@ -388,6 +392,9 @@ let @r = ':r ~/tmp/x.x'
 "let @v=':%s/^.*DEBUG -- :/:/g'
 " place cursor on param in def, will created initialize and attr_reader
 let @i='viwyo   pa  = pI@kOattr_reader :p'
+" surround url with < and > for markdown autolinking of bare url
+let @l = 'viW`>a>`<i<'
+"let @l='viW'>a>'<i<'
 " taken from http://bitbucket.org/number5/dotfiles/src/tip/dot.vimrc -
 " NOTE to save macro here press C-r C-r q (where q is macro character), see
 " :registers also
@@ -504,7 +511,7 @@ noremap <Space> <PageDown>
 " if i don't use this, remove, it can interfere with macros that go up a line
 noremap - <PageUp>
 " go to alt file, this conflicts with @c macro which uses tilde to mark " command
-nnoremap ` <c-^>
+"nnoremap ` <c-^>
 " goto exact column, not just line
 nnoremap ' `
 
@@ -565,9 +572,11 @@ nnoremap <silent> <leader>? :execute "Ack! '" . substitute(substitute(substitute
         set fuoptions=maxvert,maxhorz
         noremap  <F1> :set invfullscreen<CR>
         inoremap <F1> <ESC>:set invfullscreen<CR>a
+        :colorscheme desert
     end
 
     " puts copies and deletes into clipboard
+    " painful since even deletes are put in, even one character deletes, so clip is polluted
     set clipboard=unnamed
 
 set statusline=%f    " Path.
